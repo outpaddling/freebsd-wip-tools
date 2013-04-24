@@ -1,0 +1,33 @@
+.TH REMOVE_JB_PORTS 1
+.SH NAME    \" Section header
+.PP
+
+remove_jb_ports - Remove Jason's development ports frameworks
+
+.SH SYNOPSIS
+.PP
+.nf 
+.na 
+remove_jb_ports
+.ad
+.fi
+
+.SH "DESCRIPTION"
+The
+.B remove_jb_ports
+removes all port frameworks, including work directories, installed
+by update_jb_ports(1).
+
+The software installed via the ports is not affected by remove_jb_ports
+in any way: Only the frameworks are removed.  To remove software
+installed via these ports use "make deinstall" on FreeBSD
+or "port uninstall" on MacPorts.
+
+.SH "SEE ALSO"
+update_jb_ports(1), genplist(1)
+
+.SH AUTHOR
+.nf
+.na
+Jason W. Bacon
+

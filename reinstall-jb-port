@@ -1,0 +1,126 @@
+#!/bin/sh
+
+usage()
+{
+    printf "Usage: reinstall-jb-port [-[n]u] [-[n]r] portname\n"
+    printf "\-u = run update-jb-ports first.\n"
+    printf "\-r = remove distfile before rebuilding.\n"
+    printf "\-nu = do not run update-jb-ports first.\n"
+    printf "\-nr = do not remove distfile before rebuilding.\n"
+    exit $EX_USAGE
+}
+
+EX_OK=0
+EX__BASE=64
+EX_USAGE=64
+EX_DATAERR=65
+EX_NOINPUT=66
+EX_NOUSER=67
+EX_NOHOST=68
+EX_UNAVAILABLE=69
+EX_SOFTWARE=70
+EX_OSERR=71
+EX_OSFILE=72
+EX_CANTCREAT=73
+EX_IOERR=74
+EX_TEMPFAIL=75
+EX_PROTOCOL=76
+EX_NOPERM=77
+EX_CONFIG=78
+
+if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+    usage
+fi
+
+case $# in
+1)
+    ;;
+2)
+    case $1 in
+    -r)
+	remove='y'
+	;;
+    -u)
+	update='y'
+	;;
+    -nr)
+	remove='n'
+	;;
+    -nu)
+	update='n'
+	;;
+    *)
+	usage
+	;;
+    esac
+    shift
+    ;;
+3)
+    case $1 in
+    -r)
+	remove='y'
+	;;
+    -u)
+	update='y'
+	;;
+    -nr)
+	remove='n'
+	;;
+    -nu)
+	update='n'
+	;;
+    *)
+	usage
+	;;
+    esac
+    shift
+    
+    case $1 in
+    -r)
+	remove='y'
+	;;
+    -u)
+	update='y'
+	;;
+    -nr)
+	remove='n'
+	;;
+    -nu)
+	update='n'
+	;;
+    *)
+	usage
+	;;
+    esac
+    shift
+    ;;
+*)
+    usage
+    ;;
+esac
+
+if [ x$update = x ]; then
+    printf "Run update-jb-ports first? (y/n) "
+    read update
+fi
+
+if [ x$remove = x ]; then
+    printf "Remove distfile? (y/n) "
+    read remove
+fi
+
+if [ x$update = x'y' ]; then
+    cd
+    update-jb-ports
+fi
+
+portname=$1
+
+cd /usr/jb-ports/*/$portname
+if [ x$remove = xy ]; then
+    make distclean
+else
+    make clean
+fi
+make deinstall reinstall
+
