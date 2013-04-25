@@ -2,10 +2,10 @@
 
 usage()
 {
-    printf "Usage: reinstall-jb-port [-[n]u] [-[n]r] portname\n"
-    printf "\-u = run update-jb-ports first.\n"
+    printf "Usage: reinstall-wip-port [-[n]u] [-[n]r] portname\n"
+    printf "\-u = run update-wip-ports first.\n"
     printf "\-r = remove distfile before rebuilding.\n"
-    printf "\-nu = do not run update-jb-ports first.\n"
+    printf "\-nu = do not run update-wip-ports first.\n"
     printf "\-nr = do not remove distfile before rebuilding.\n"
     exit $EX_USAGE
 }
@@ -100,7 +100,7 @@ case $# in
 esac
 
 if [ x$update = x ]; then
-    printf "Run update-jb-ports first? (y/n) "
+    printf "Run update-wip-ports first? (y/n) "
     read update
 fi
 
@@ -111,12 +111,12 @@ fi
 
 if [ x$update = x'y' ]; then
     cd
-    update-jb-ports
+    update-wip-ports
 fi
 
 portname=$1
 
-cd /usr/jb-ports/*/$portname
+cd /usr/wip/*/$portname
 if [ x$remove = xy ]; then
     make distclean
 else
