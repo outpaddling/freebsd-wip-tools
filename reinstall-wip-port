@@ -122,5 +122,5 @@ if [ x$remove = xy ]; then
 else
     make clean
 fi
-make deinstall reinstall
+make -DBATCH deinstall reinstall
 

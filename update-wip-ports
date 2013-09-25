@@ -17,7 +17,7 @@ else
 fi
 
 cd $wip_ports_dir/ports-mgmt/update-wip-ports
-make deinstall distclean reinstall
+make -DBATCH deinstall distclean reinstall
 
 cat << EOM
 
