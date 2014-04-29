@@ -99,6 +99,14 @@ case $# in
     ;;
 esac
 
+portname=$1
+
+# Make sure each is given as category/port
+if ! printf $portname | fgrep -q '/'; then
+    printf "${0}: ${portname}: missing category.\n"
+    exit 1
+fi
+
 if [ x$update = x ]; then
     printf "Run update-wip-ports first? (y/n) "
     read update
@@ -114,13 +122,13 @@ if [ x$update = x'y' ]; then
     update-wip-ports
 fi
 
-portname=$1
-
-cd /usr/wip/*/$portname
+cd /usr/wip/$portname
 if [ x$remove = xy ]; then
     make distclean
 else
     make clean
 fi
-make deinstall config reinstall
+
+# Minimize time deinstalled
+make config build deinstall reinstall
 
