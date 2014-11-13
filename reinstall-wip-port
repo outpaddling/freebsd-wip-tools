@@ -129,6 +129,8 @@ else
     make clean
 fi
 
-# Minimize time deinstalled
-make config build deinstall reinstall
+make deinstall
+make clean
+make config
+make reinstall
 
