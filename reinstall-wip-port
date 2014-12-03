@@ -131,6 +131,6 @@ fi
 
 make deinstall
 make clean
-make config
+make rmconfig
 make reinstall
 
