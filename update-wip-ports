@@ -25,7 +25,7 @@ cat << EOM
 You can now install any of the ports added above using:
 
 cd $wip_ports_dir/<category>/<portname>
-make install
+make install clean
 *********************************************************
 EOM
 
