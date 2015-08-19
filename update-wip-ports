@@ -17,7 +17,8 @@ else
 fi
 
 cd $wip_ports_dir/ports-mgmt/update-wip-ports
-make -DBATCH deinstall distclean reinstall distclean
+make -DBATCH deinstall distclean reinstall
+make distclean
 
 cat << EOM
 
@@ -25,7 +26,7 @@ cat << EOM
 You can now install any of the ports added above using:
 
 cd $wip_ports_dir/<category>/<portname>
-make install clean
+make install
 *********************************************************
 EOM
 
