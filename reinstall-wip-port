@@ -108,12 +108,12 @@ if ! printf $portname | fgrep -q '/'; then
 fi
 
 if [ x$update = x ]; then
-    printf "Run update-wip-ports first? (y/n) "
+    printf "Run update-wip-ports first? y/[n] "
     read update
 fi
 
 if [ x$remove = x ]; then
-    printf "Remove distfile? (y/n) "
+    printf "Remove distfile? y/[n] "
     read remove
 fi
 
