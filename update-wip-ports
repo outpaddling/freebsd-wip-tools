@@ -16,6 +16,8 @@ else
     svn up
 fi
 
+sed -i '' -e 's|^DEV_WARNING+=.*"Not validating first|# &|' /usr/ports/Mk/bsd.sanity.mk
+
 cd $wip_ports_dir/ports-mgmt/update-wip-ports
 make -DBATCH deinstall distclean reinstall
 make distclean
