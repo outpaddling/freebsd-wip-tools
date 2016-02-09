@@ -13,6 +13,7 @@ if [ ! -e $wip_ports_dir ]; then
     fi
 else
     cd $wip_ports_dir
+    ./clean-all
     svn up
 fi
 
