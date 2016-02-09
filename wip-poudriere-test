@@ -1,0 +1,69 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2016-02-02  Charlie &   Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 category/port all|jailname [jailname ...]\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Function description:
+#       Pause until user presses return
+##########################################################################
+
+pause()
+{
+    local junk
+    
+    printf "Press return to continue..."
+    read junk
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# -lt 2 ]; then
+    usage
+fi
+
+stty intr undef
+update-wip-ports
+category=`dirname $1`
+port=`basename $1`
+shift
+if [ $1 = all ]; then
+    jails="`poudriere jail -l | awk '{print $1}'|fgrep -v JAILNAME`"
+else
+    jails="$@"
+fi
+save_cwd=`pwd`
+cd /usr/wip/$category/$port
+make clean
+cd ..
+rsync -av --delete $port /usr/local/poudriere/ports/default/$category
+cd $save_cwd
+
+for jailname in $jails; do
+    poudriere testport -j $jailname -o $category/$port 2>&1 | tee output
+    pkgname=$(auto-print-make-variable -p /usr/wip $category/$port PKGNAME)
+    logfile=$(awk '$3 == "Logs:" { print $4 }' output)"/logs/$pkgname.log"
+    cp $logfile $(basename $logfile)"-$jailname"
+    rm -f output
+done
+stty intr ^C
+

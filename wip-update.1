@@ -1,32 +1,32 @@
-.TH UPDATE-WIP-PORTS 1
+.TH WIP-UPDATE 1
 .SH NAME    \" Section header
 .PP
 
-update-wip-ports - Download and install frameworks for work-in-progress ports
+wip-update - Download and install frameworks for work-in-progress ports
 
 .SH SYNOPSIS
 .PP
 .nf 
 .na 
-update-wip-ports
+wip-update
 .ad
 .fi
 
 .SH "DESCRIPTION"
 The
-.B update-wip-ports
+.B wip-update
 script downloads and installs frameworks for development versions of various
 FreeBSD ports.  These are frameworks for ports that have not been committed
 to the official ports tree.
 
-The software installed via the ports is not affected by update-wip-ports
+The software installed via the ports is not affected by wip-update
 in any way: Only the frameworks are updated.  To upgrade software
 installed via these ports:
 
 1. Remove the software via the ports system (e.g. "make deinstall" or
 pkg_delete)
 
-2. Run update-wip-ports
+2. Run wip-update
 
 3. Reinstall the port using "make install" or "port install".
 
