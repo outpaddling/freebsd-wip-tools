@@ -1,0 +1,68 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2017-03-07  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 [port]\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+case $# in
+0)
+    ;;
+1)
+    if [ -z $PORTSDIR ]; then
+	PORTSDIR=/usr/ports
+    fi
+    cd $PORTSDIR/wip/$1
+    ;;
+*)
+    usage
+esac
+
+if [ -z $EDITOR ]; then
+    EDITOR=vi
+fi
+for file in pkg-descr Makefile; do
+    $EDITOR $file
+done
+fmt -w 80 pkg-descr > pkg-descr.temp
+mv -v pkg-descr.temp pkg-descr
+if [ ! -e distinfo ]; then
+    make makesum
+fi
+make clean stage
+printf "Add to repo? y/[n] "
+read add
+if [ 0$add = 0y ]; then
+    make clean
+    if [ -e ../../.svn ]; then
+	svn add .
+    elif [ -e ../../.git ]; then
+	git add .
+    else
+	printf "This is neither a subversion nor a git repository.\n"
+	exit 1
+    fi
+fi
+printf "Run port-remake? y/[n] "
+read remake
+if [ 0$remake = 0y ]; then
+    port-remake
+fi

@@ -14,7 +14,27 @@
 
 usage()
 {
-    printf "Usage: $0 category/port all|jailname [jailname ...]\n"
+    cat << EOM
+
+Usage: $0 port all|pattern|jailname [jailname ...]
+
+Examples:
+
+    # All jails
+    wip-poudriere-test boost-libs all
+
+    # All jails with 10-3 in name
+    wip-poudriere-test boost-libs 10-3
+
+    # All jails with amd64 in name
+    wip-poudriere-test boost-libs amd64
+
+    # Two specific jails
+    wip-poudriere-test boost-libs 10-3-amd64 11-0-i386
+
+EOM
+    printf "Available jails:\n\n"
+    poudriere jail -ln
     exit 1
 }
 
@@ -41,29 +61,17 @@ if [ $# -lt 2 ]; then
     usage
 fi
 
-stty intr undef
-update-wip-ports
-category=`dirname $1`
-port=`basename $1`
-shift
-if [ $1 = all ]; then
-    jails="`poudriere jail -l | awk '{print $1}'|fgrep -v JAILNAME`"
-else
-    jails="$@"
+port=$1
+jails=$2
+umask 022
+
+if [ -z $PORTSDIR ]; then
+    PORTSDIR=/usr/ports
 fi
-save_cwd=`pwd`
-cd /usr/wip/$category/$port
-make clean
-cd ..
-rsync -av --delete $port /usr/local/poudriere/ports/default/$category
-cd $save_cwd
 
-for jailname in $jails; do
-    poudriere testport -j $jailname -o $category/$port 2>&1 | tee output
-    pkgname=$(auto-print-make-variable -p /usr/wip $category/$port PKGNAME)
-    logfile=$(awk '$3 == "Logs:" { print $4 }' output)"/logs/$pkgname.log"
-    cp $logfile $(basename $logfile)"-$jailname"
-    rm -f output
-done
-stty intr ^C
+# FIXME: Don't hard-code poudriere prefix
+rsync -av --delete $PORTSDIR/wip /usr/local/poudriere/ports/default/
+sed -i '' -e 's|wayland www|wayland wip www|g' \
+    /usr/local/poudriere/ports/default/Mk/bsd.port.mk
 
+port-poudriere-test wip/$port $jails

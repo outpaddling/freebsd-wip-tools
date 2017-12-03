@@ -1,0 +1,79 @@
+#!/bin/sh -e
+
+if [ -z $PORTSDIR ]; then
+    PORTSDIR=/usr/ports
+fi
+
+wip_ports_dir=$PORTSDIR/wip
+
+# wip-poudriere-test needs access from non-root account
+umask 022
+
+if [ -e /usr/wip ] && [ ! -e $wip_ports_dir ]; then
+    printf "Moving /usr/wip to $wip_ports_dir...\n"
+    mv /usr/wip $PORTSDIR
+fi
+
+if [ ! -e $wip_ports_dir ]; then
+    printf "No $wip_ports_dir directory.  Aborting...\n"
+    exit 1
+else
+    cd $wip_ports_dir
+
+    # Temporary replacement for clean-all during transition
+    printf "Cleaning...\n"
+    cd $wip_ports_dir
+    for dir in *; do
+	if [ -d $dir/work ]; then
+	    cd $dir
+	    pwd
+	    make clean
+	    cd ..
+	fi
+    done
+    
+    find . -name '.*.bak' -exec rm '{}' \;
+
+    if [ -e .svn ]; then
+	svn up
+    elif [ -e .git ]; then
+	git pull
+    else
+	printf "This is neither a subversion nor a git repository.\n"
+	exit 1
+    fi
+fi
+
+if ! fgrep 'USE_LOCAL_MK=yes' /etc/make.conf > /dev/null; then
+    cat << EOM >> /etc/make.conf
+
+# Added by freebsd-wip-checkout
+USE_LOCAL_MK=yes
+# End addition
+
+EOM
+fi
+
+if ! fgrep 'VALID_CATEGORIES+=wip' /usr/ports/Mk/bsd.local.mk > /dev/null; then
+    cat << EOM >> /usr/ports/Mk/bsd.local.mk
+
+# Added by freebsd-wip-checkout
+VALID_CATEGORIES+=wip
+# End addition
+
+EOM
+fi
+
+cd $wip_ports_dir/wip-tools
+make -DBATCH deinstall distclean reinstall
+make distclean
+
+cat << EOM
+
+*********************************************************
+You can now install any of the ports added above using:
+
+cd $wip_ports_dir/<portname>
+make install
+*********************************************************
+EOM

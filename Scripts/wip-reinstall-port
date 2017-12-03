@@ -2,10 +2,10 @@
 
 usage()
 {
-    printf "Usage: reinstall-wip-port [-[n]u] [-[n]r] portname\n"
-    printf "\-u = run update-wip-ports first.\n"
+    printf "Usage: wip-reinstall-port [-[n]u] [-[n]r] portname\n"
+    printf "\-u = run wip-update first.\n"
     printf "\-r = remove distfile before rebuilding.\n"
-    printf "\-nu = do not run update-wip-ports first.\n"
+    printf "\-nu = do not run wip-update first.\n"
     printf "\-nr = do not remove distfile before rebuilding.\n"
     exit $EX_USAGE
 }
@@ -101,14 +101,12 @@ esac
 
 portname=$1
 
-# Make sure each is given as category/port
-if ! printf $portname | fgrep -q '/'; then
-    printf "${0}: ${portname}: missing category.\n"
-    exit 1
+if [ -z $PORTSDIR ]; then
+    PORTSDIR=/usr/ports
 fi
 
 if [ x$update = x ]; then
-    printf "Run update-wip-ports first? y/[n] "
+    printf "Run wip-update first? y/[n] "
     read update
 fi
 
@@ -119,10 +117,10 @@ fi
 
 if [ x$update = x'y' ]; then
     cd
-    update-wip-ports
+    wip-update
 fi
 
-cd /usr/wip/$portname
+cd $PORTSDIR/wip/$portname
 if [ x$remove = xy ]; then
     make distclean
 else
@@ -133,4 +131,3 @@ make deinstall
 make clean
 make rmconfig
 make reinstall
-

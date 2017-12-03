@@ -1,0 +1,38 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2017-03-23  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 portname\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+
+portname=$1
+
+if [ -s $PORTSDIR ]; then
+    PORTSDIR=/usr/ports
+fi
+cd $PORTSDIR/wip
+port create $portname
+cd $portname
+wip-edit
