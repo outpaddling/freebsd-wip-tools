@@ -70,8 +70,10 @@ if [ -z $PORTSDIR ]; then
 fi
 
 # FIXME: Don't hard-code poudriere prefix
-rsync -av --delete $PORTSDIR/wip /usr/local/poudriere/ports/default/
+POUDRIERE=/usr/local/poudriere
+chmod -R a+rX $PORTSDIR/wip
+rsync -av --delete $PORTSDIR/wip $POUDRIERE/ports/default/
 sed -i '' -e 's|wayland www|wayland wip www|g' \
-    /usr/local/poudriere/ports/default/Mk/bsd.port.mk
+    $POUDRIERE/ports/default/Mk/bsd.port.mk
 
 port-poudriere-test wip/$port $jails
