@@ -68,6 +68,8 @@ umask 022
 if [ -z $PORTSDIR ]; then
     PORTSDIR=/usr/ports
 fi
+# In case of restrictive umask during prior downloads
+chmod -R a+rX $PORTSDIR/distfiles
 
 # FIXME: Don't hard-code poudriere prefix
 POUDRIERE=/usr/local/poudriere
