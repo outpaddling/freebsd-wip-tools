@@ -52,9 +52,9 @@ printf "Add to repo? y/[n] "
 read add
 if [ 0$add = 0y ]; then
     make clean
-    if [ -e ../../.svn ]; then
+    if [ -e ../.svn ]; then
 	svn add .
-    elif [ -e ../../.git ]; then
+    elif [ -e ../.git ]; then
 	git add .
     else
 	printf "This is neither a subversion nor a git repository.\n"
