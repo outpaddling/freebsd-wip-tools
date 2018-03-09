@@ -42,7 +42,7 @@ fi
 for file in pkg-descr Makefile; do
     $EDITOR $file
 done
-fmt -w 80 pkg-descr > pkg-descr.temp
+fmt -w 79 pkg-descr > pkg-descr.temp
 mv -v pkg-descr.temp pkg-descr
 if [ ! -e distinfo ]; then
     make makesum
