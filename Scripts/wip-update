@@ -35,7 +35,7 @@ else
     find . -name '.*.bak' -exec rm '{}' \;
 
     if [ -e .svn ]; then
-	svn up
+	svnlite up
     elif [ -e .git ]; then
 	git pull
     else
