@@ -2,14 +2,11 @@
 
 ##########################################################################
 #   Script description:
-#       
-#   Arguments:
-#       
-#   Returns:
+#       Poudriere test a WIP port
 #       
 #   History:
 #   Date        Name        Modification
-#   2016-02-02  Charlie &   Begin
+#   2016-02-02  J Bacon     Begin
 ##########################################################################
 
 usage()
@@ -75,7 +72,7 @@ chmod -R a+rX $PORTSDIR/distfiles
 # FIXME: Don't hard-code poudriere prefix
 POUDRIERE=/usr/local/poudriere
 chmod -R a+rX $PORTSDIR/wip
-rsync -av --delete $PORTSDIR/wip $POUDRIERE/ports/default/
+rsync -av --delete --exclude work $PORTSDIR/wip $POUDRIERE/ports/default/
 sed -i '' -e 's|wayland www|wayland wip www|g' \
     $POUDRIERE/ports/default/Mk/bsd.port.mk
 
