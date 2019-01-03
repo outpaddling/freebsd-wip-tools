@@ -1,16 +1,32 @@
 #!/bin/sh -e
 
-cd /usr/ports/wip
+: ${PORTSDIR:=/usr/ports}
+
+cd $PORTSDIR/wip
 for dir in *; do
     if [ -e $dir/Makefile ]; then
 	categories=`awk -F = '$1 == "CATEGORIES" { print $2 }' $dir/Makefile`
 	committed=0
 	for category in $categories; do
-	    if [ $category != wip ] && [ -e /usr/ports/$category/$dir ]; then
+	    if [ $category != wip ] && [ -e $PORTSDIR/$category/$dir ]; then
+		committed=1
 		printf "Found $category/$dir\n"
 		egrep '^PORTVERSION=|^DISTVERSION=' \
-		    /usr/ports/wip/$dir/Makefile /usr/ports/$category/$dir/Makefile
-		committed=1
+		    $PORTSDIR/wip/$dir/Makefile \
+		    $PORTSDIR/$category/$dir/Makefile
+		read -p "Diff? y/[n] " diff
+		if [ 0$diff = 0y ]; then
+		    diff -ruN \
+			$PORTSDIR/$category/$dir \
+			$PORTSDIR/wip/$dir | more
+		    printf "\nDependent ports:\n"
+		    fgrep wip/$dir */Makefile || true
+		    read -p "Remove? y/[n] " remove
+		    if [ 0$remove = 0y ]; then
+			svn rm $dir
+			svn ci -m "${dir}: Remove obsolete port"
+		    fi
+		fi
 	    fi
 	done
 	if [ $committed = 0 ]; then
