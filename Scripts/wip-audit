@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+cd /usr/ports/wip
+for dir in *; do
+    if [ -e $dir/Makefile ]; then
+	categories=`awk -F = '$1 == "CATEGORIES" { print $2 }' $dir/Makefile`
+	committed=0
+	for category in $categories; do
+	    if [ $category != wip ] && [ -e /usr/ports/$category/$dir ]; then
+		printf "Found $category/$dir\n"
+		egrep '^PORTVERSION=|^DISTVERSION=' \
+		    /usr/ports/wip/$dir/Makefile /usr/ports/$category/$dir/Makefile
+		committed=1
+	    fi
+	done
+	if [ $committed = 0 ]; then
+	    printf "No committed version of $dir.\n"
+	fi
+    fi
+done
+
