@@ -2,10 +2,7 @@
 
 ##########################################################################
 #   Script description:
-#       
-#   Arguments:
-#       
-#   Returns:
+#       Edit all components of a new wip port in logical order
 #       
 #   History:
 #   Date        Name        Modification
@@ -44,9 +41,7 @@ for file in pkg-descr Makefile; do
 done
 fmt -w 79 pkg-descr > pkg-descr.temp
 mv -v pkg-descr.temp pkg-descr
-if [ ! -e distinfo ]; then
-    make makesum
-fi
+make makesum
 make clean stage
 printf "Add to repo? y/[n] "
 read add
