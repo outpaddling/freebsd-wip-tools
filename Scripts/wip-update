@@ -9,17 +9,32 @@ wip_ports_dir=$PORTSDIR/wip
 # wip-poudriere-test needs access from non-root account
 umask 022
 
-if [ -e /usr/wip ] && [ ! -e $wip_ports_dir ]; then
-    printf "Moving /usr/wip to $wip_ports_dir...\n"
-    mv /usr/wip $PORTSDIR
-fi
-
 if [ ! -e $wip_ports_dir ]; then
     printf "No $wip_ports_dir directory.  Aborting...\n"
     exit 1
 else
     cd $wip_ports_dir
-
+    
+    if [ -e .svn ]; then
+	if svn st | awk '{ print $1 }' | grep '^M'; then
+	    printf 'Modified files may cause conflicts when updating:\n'
+	    svn st
+	    read -p 'Update anyway? y/[n] ' update
+	    if [ 0$update != 0y ]; then
+		exit
+	    fi
+	fi
+    elif [ -e .git ]; then
+	if git status | awk '{ print $1 }' | grep '^modified'; then
+	    printf 'Modified files may cause conflicts when updating:\n'
+	    git status
+	    read -p 'Update anyway? y/[n] ' update
+	    if [ 0$update != 0y ]; then
+		exit
+	    fi
+	fi
+    fi
+    
     # Temporary replacement for clean-all during transition
     printf "Cleaning...\n"
     cd $wip_ports_dir
