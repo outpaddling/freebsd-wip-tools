@@ -2,11 +2,15 @@
 
 usage()
 {
-    printf "Usage: wip-reinstall-port [-[n]u] [-[n]r] portname\n"
-    printf "\-u = run wip-update first.\n"
-    printf "\-r = remove distfile before rebuilding.\n"
-    printf "\-nu = do not run wip-update first.\n"
-    printf "\-nr = do not remove distfile before rebuilding.\n"
+    cat << EOM
+Usage: wip-reinstall-port [-[n]u] [-[n]r] -b portname [portname]
+
+-u  = run wip-update first
+-r  = remove distfile before rebuilding
+-nu = do not run wip-update first
+-nr = do not remove distfile before rebuilding
+-b  = Build in batch mode (no options dialogs)
+EOM
     exit $EX_USAGE
 }
 
@@ -28,14 +32,11 @@ EX_PROTOCOL=76
 EX_NOPERM=77
 EX_CONFIG=78
 
-if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+if [ $# -lt 1 ]; then
     usage
 fi
 
-case $# in
-1)
-    ;;
-2)
+while echo $1 | grep -q -e '^-'; do
     case $1 in
     -r)
 	remove='y'
@@ -49,57 +50,15 @@ case $# in
     -nu)
 	update='n'
 	;;
-    *)
-	usage
-	;;
-    esac
-    shift
-    ;;
-3)
-    case $1 in
-    -r)
-	remove='y'
-	;;
-    -u)
-	update='y'
-	;;
-    -nr)
-	remove='n'
-	;;
-    -nu)
-	update='n'
+    -b)
+	make_flags='-DBATCH'
 	;;
     *)
 	usage
 	;;
     esac
     shift
-    
-    case $1 in
-    -r)
-	remove='y'
-	;;
-    -u)
-	update='y'
-	;;
-    -nr)
-	remove='n'
-	;;
-    -nu)
-	update='n'
-	;;
-    *)
-	usage
-	;;
-    esac
-    shift
-    ;;
-*)
-    usage
-    ;;
-esac
-
-portname=$1
+done
 
 if [ -z $PORTSDIR ]; then
     PORTSDIR=/usr/ports
@@ -120,14 +79,16 @@ if [ x$update = x'y' ]; then
     wip-update
 fi
 
-cd $PORTSDIR/wip/$portname
-if [ x$remove = xy ]; then
-    make distclean
-else
+for portname in $@; do
+    cd $PORTSDIR/wip/$portname
+    if [ x$remove = xy ]; then
+	make distclean
+    else
+	make clean
+    fi
+    
+    make deinstall
     make clean
-fi
-
-make deinstall
-make clean
-make rmconfig
-make reinstall
+    make rmconfig
+    make $make_flags reinstall
+done
