@@ -3,7 +3,7 @@
 usage()
 {
     cat << EOM
-Usage: wip-reinstall-port [-[n]u] [-[n]r] -b portname [portname]
+Usage: wip-reinstall-port [-[n]u] [-[n]r] -b portname [portname ...]
 
 -u  = run wip-update first
 -r  = remove distfile before rebuilding
