@@ -79,11 +79,17 @@ VALID_CATEGORIES+=wip
 EOM
 fi
 
-cd $wip_ports_dir/wip-tools
-make -DBATCH deinstall distclean reinstall
-make distclean
-
-cat << EOM
+installed_version=$(pkg query '%v' wip-tools)
+ports_version=$(auto-print-make-variable wip/wip-tools PKGVERSION)
+if [ $ports_version != $installed_version ]; then
+    reason=$(echo $line | awk '{ print $2 }')
+    printf "Installed: $installed_version\n"
+    printf "Ports:     $ports_version\n"
+    cd $wip_ports_dir/wip-tools
+    make -DBATCH deinstall distclean reinstall
+    make distclean
+    
+    cat << EOM
 
 *********************************************************
 You can now install any of the ports added above using:
@@ -92,3 +98,8 @@ cd $wip_ports_dir/<portname>
 make install
 *********************************************************
 EOM
+else
+    printf "Latest version of wip-tools is already installed.\n"
+fi
+
+
