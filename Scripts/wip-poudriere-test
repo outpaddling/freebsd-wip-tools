@@ -73,7 +73,6 @@ chmod -R a+rX $PORTSDIR/distfiles
 POUDRIERE=/usr/local/poudriere
 chmod -R a+rX $PORTSDIR/wip
 rsync -av --delete --exclude work $PORTSDIR/wip $POUDRIERE/ports/default/
-sed -i '' -e 's|wayland www|wayland wip www|g' \
-    $POUDRIERE/ports/default/Mk/bsd.port.mk
-
+auto-append-line 'VALID_CATEGORIES+=wip' \
+	$POUDRIERE/ports/default/Mk/bsd.local.mk $0
 port-poudriere-test wip/$port $jails
