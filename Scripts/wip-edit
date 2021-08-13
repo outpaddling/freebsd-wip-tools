@@ -39,7 +39,7 @@ fi
 for file in pkg-descr Makefile; do
     $EDITOR $file
 done
-fmt -w 79 pkg-descr > pkg-descr.temp
+fmt -w 71 pkg-descr > pkg-descr.temp
 mv -v pkg-descr.temp pkg-descr
 make makesum
 make clean stage
