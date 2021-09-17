@@ -52,6 +52,14 @@ if fgrep '$FreeBSD' $PORTSDIR/wip/$port/Makefile | grep -v '^CATEGORIES'; then
 fi
 
 if [ -e $PORTSDIR/$category/$port ]; then
+    if ! diff $PORTSDIR/$category/$port/Makefile $PORTSDIR/wip/$port/Makefile \
+	| egrep 'PORTVERSION|DISTVERSION|PORTREVISION'; then
+	read -p "No change to PORTVERSION or PORTREVISION.  OK to proceed? y/[n] " proceed
+	if [ 0"$proceed" != 0y ]; then
+	    exit
+	fi
+    fi
+
     printf "$PORTSDIR/$category/$port already exists.  Overwrite? y/[n] \n"
     read overwrite
     if [ 0$overwrite != 0y ]; then
