@@ -1,6 +1,20 @@
 #!/bin/sh -e
 
-: ${PORTSDIR:=/usr/ports}
+case $(uname) in
+FreeBSD)
+    : ${PORTSDIR:=/usr/ports}
+    ;;
+
+DragonFly)
+    : ${PORTSDIR:=/usr/dports}
+    ;;
+
+*)
+    printf "$0: Not supported on $(uname).\n"
+    exit 1
+    ;;
+
+esac
 
 cd $PORTSDIR/wip
 for dir in *; do

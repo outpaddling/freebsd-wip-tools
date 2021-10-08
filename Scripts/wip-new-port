@@ -29,9 +29,22 @@ fi
 
 portname=$1
 
-if [ -s $PORTSDIR ]; then
-    PORTSDIR=/usr/ports
-fi
+case $(uname) in
+FreeBSD)
+    : ${PORTSDIR:=/usr/ports}
+    ;;
+
+DragonFly)
+    : ${PORTSDIR:=/usr/dports}
+    ;;
+
+*)
+    printf "$0: Not supported on $(uname).\n"
+    exit 1
+    ;;
+
+esac
+
 cd $PORTSDIR/wip
 port create $portname
 cd $portname

@@ -20,13 +20,26 @@ usage()
 #   Main
 ##########################################################################
 
+case $(uname) in
+FreeBSD)
+    : ${PORTSDIR:=/usr/ports}
+    ;;
+
+DragonFly)
+    : ${PORTSDIR:=/usr/dports}
+    ;;
+
+*)
+    printf "$0: Not supported on $(uname).\n"
+    exit 1
+    ;;
+
+esac
+
 case $# in
 0)
     ;;
 1)
-    if [ -z $PORTSDIR ]; then
-	PORTSDIR=/usr/ports
-    fi
     cd $PORTSDIR/wip/$1
     ;;
 *)

@@ -60,9 +60,22 @@ while echo $1 | grep -q -e '^-'; do
     shift
 done
 
-if [ -z $PORTSDIR ]; then
-    PORTSDIR=/usr/ports
-fi
+case $(uname) in
+FreeBSD)
+    : ${PORTSDIR:=/usr/ports}
+    ;;
+
+DragonFly)
+    : ${PORTSDIR:=/usr/dports}
+    ;;
+
+*)
+    printf "$0: Not supported on $(uname).\n"
+    exit 1
+    ;;
+
+esac
+
 
 if [ x$update = x ]; then
     printf "Run wip-update first? y/[n] "

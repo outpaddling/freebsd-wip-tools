@@ -1,8 +1,20 @@
 #!/bin/sh -e
 
-if [ -z $PORTSDIR ]; then
-    PORTSDIR=/usr/ports
-fi
+case $(uname) in
+FreeBSD)
+    : ${PORTSDIR:=/usr/ports}
+    ;;
+
+DragonFly)
+    : ${PORTSDIR:=/usr/dports}
+    ;;
+
+*)
+    printf "$0: Not supported on $(uname).\n"
+    exit 1
+    ;;
+
+esac
 
 wip_ports_dir=$PORTSDIR/wip
 
@@ -69,8 +81,8 @@ USE_LOCAL_MK=yes
 EOM
 fi
 
-if ! fgrep 'VALID_CATEGORIES+=wip' /usr/ports/Mk/bsd.local.mk > /dev/null; then
-    cat << EOM >> /usr/ports/Mk/bsd.local.mk
+if ! fgrep 'VALID_CATEGORIES+=wip' $PORTSDIR/Mk/bsd.local.mk > /dev/null; then
+    cat << EOM >> $PORTSDIR/Mk/bsd.local.mk
 
 # Added by freebsd-wip-checkout
 VALID_CATEGORIES+=wip
