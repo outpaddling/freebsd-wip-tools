@@ -1,7 +1,14 @@
 #!/bin/sh -e
 
 if [ -z $PORTSDIR ]; then
-    PORTSDIR=/usr/ports
+    if [ $(uname) = DragonFly ]; then
+	PORTSDIR=/usr/dports
+    elif [ $(uname) = FreeBSD ]; then
+	PORTSDIR=/usr/ports
+    else
+	printf "$0: Not supported on $(uname).\n"
+	exit 1
+    fi
 fi
 
 wip_ports_dir=$PORTSDIR/wip

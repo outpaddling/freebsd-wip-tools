@@ -62,11 +62,12 @@ done
 
 if [ -z $PORTSDIR ]; then
     if [ $(uname) = FreeBSD ]; then
-        PORTSDIR=/usr/ports
+	PORTSDIR=/usr/ports
     elif [ $(uname) = DragonFly ]; then
-        PORTSDIR=/usr/dports
+	PORTSDIR=/usr/dports
     else
-        printf "$0: Not supported on $(auto-ostype).\n"
+	printf "$0: Not supported on $(uname).\n"
+	exit 1
     fi
 fi
 
