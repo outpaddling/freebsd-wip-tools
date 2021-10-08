@@ -61,7 +61,13 @@ while echo $1 | grep -q -e '^-'; do
 done
 
 if [ -z $PORTSDIR ]; then
-    PORTSDIR=/usr/ports
+    if [ $(uname) = FreeBSD ]; then
+        PORTSDIR=/usr/ports
+    elif [ $(uname) = DragonFly ]; then
+        PORTSDIR=/usr/dports
+    else
+        printf "$0: Not supported on $(auto-ostype).\n"
+    fi
 fi
 
 if [ x$update = x ]; then
