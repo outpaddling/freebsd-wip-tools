@@ -1,6 +1,5 @@
 #!/bin/sh -e
 
-<<<<<<< HEAD
 case $(uname) in
 FreeBSD)
     : ${PORTSDIR:=/usr/ports}
@@ -16,18 +15,6 @@ DragonFly)
     ;;
 
 esac
-=======
-if [ -z $PORTSDIR ]; then
-    if [ $(uname) = DragonFly ]; then
-	PORTSDIR=/usr/dports
-    elif [ $(uname) = FreeBSD ]; then
-	PORTSDIR=/usr/ports
-    else
-	printf "$0: Not supported on $(uname).\n"
-	exit 1
-    fi
-fi
->>>>>>> 64730d0b544b5edc23dff8c3c69d9e96a855d088
 
 wip_ports_dir=$PORTSDIR/wip
 
