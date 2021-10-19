@@ -2,10 +2,7 @@
 
 ##########################################################################
 #   Script description:
-#       
-#   Arguments:
-#       
-#   Returns:
+#       Generate a skeletal new port and begin the edit process
 #       
 #   History:
 #   Date        Name        Modification
@@ -46,6 +43,6 @@ DragonFly)
 esac
 
 cd $PORTSDIR/wip
-port create $portname
+port-create $portname
 cd $portname
 wip-edit
