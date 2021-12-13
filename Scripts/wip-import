@@ -51,6 +51,18 @@ if fgrep '$FreeBSD' $PORTSDIR/wip/$port/Makefile | grep -v '^CATEGORIES'; then
     exit 1
 fi
 
+read -p "OK to update ports trees? y/[n] " update_ports
+if [ 0$"update_ports" = 0y ]; then
+    save_cwd=$(pwd)
+    cd $PORTSDIR
+    git pull
+    cd wip
+    git pull
+    cd $save_pwd
+else
+    exit
+fi
+
 if [ -e $PORTSDIR/$category/$port ]; then
     if ! diff $PORTSDIR/$category/$port/Makefile $PORTSDIR/wip/$port/Makefile \
 	| egrep 'PORTVERSION|DISTVERSION|PORTREVISION'; then
@@ -60,7 +72,7 @@ if [ -e $PORTSDIR/$category/$port ]; then
 	fi
     fi
 
-    printf "$PORTSDIR/$category/$port already exists.  Overwrite? y/[n] \n"
+    printf "$PORTSDIR/$category/$port already exists.  Overwrite? y/[n] "
     read overwrite
     if [ 0$overwrite != 0y ]; then
 	exit
@@ -73,6 +85,7 @@ git pull
 
 cd $PORTSDIR/wip/$port
 make clean
+
 rsync -av --delete $PORTSDIR/wip/$port $PORTSDIR/$category
 
 sed -i '' '/^CATEGORIES/s|wip ||' $PORTSDIR/$category/$port/Makefile
@@ -88,15 +101,19 @@ make makesum    # GO ports change distname with category
 for file in Makefile pkg-descr; do
     $EDITOR $file
 done
+if ! which port-check; then
+    wip-reinstall-port -u -r port-dev
+fi
 port-check
 
 # If user chose to overwrite, that means the port already existed and should
 # be in category/Makefile already
+cd $PORTSDIR/$category
+git status
 if [ 0$overwrite != 0y ]; then
     printf "Add port? y/[n] "
     read add
     if [ 0$add = 0y ]; then
-	cd ..
 	git add $port
 	printf "Add $port to $category/Makefile.\n"
 	pause
