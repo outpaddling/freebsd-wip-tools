@@ -46,22 +46,25 @@ category=$2
 
 port=`echo $port | sed -e 's|/$||'`
 
-if fgrep '$FreeBSD' $PORTSDIR/wip/$port/Makefile | grep -v '^CATEGORIES'; then
-    printf "$port contains \$FreeBSD\$ tag.  Please fix and try again.\n"
-    exit 1
-fi
-
-read -p "OK to update ports trees? y/[n] " update_ports
-if [ 0"$update_ports" = 0y ]; then
+read -p "[U]pdate ports and wip trees [S]kip update [C]ancel " update_ports
+case "$update_ports" in
+U|u)
     save_cwd=$(pwd)
     cd $PORTSDIR
     git pull
     cd wip
     git pull
     cd $save_cwd
-else
+    ;;
+
+S|s)
+    ;;
+
+*)
     exit
-fi
+    ;;
+
+esac
 
 if [ -e $PORTSDIR/$category/$port ]; then
     if ! diff $PORTSDIR/$category/$port/Makefile $PORTSDIR/wip/$port/Makefile \
@@ -79,10 +82,6 @@ if [ -e $PORTSDIR/$category/$port ]; then
     fi
 fi
 
-# Make sure we're adding to a fully updated tree
-cd $PORTSDIR
-git pull
-
 cd $PORTSDIR/wip/$port
 make clean
 
@@ -92,15 +91,23 @@ sed -i '' '/^CATEGORIES/s|wip ||' $PORTSDIR/$category/$port/Makefile
 
 cd $PORTSDIR/$category/$port
 
-if grep -w wip Makefile | grep -v '^CATEGORIES'; then
-    printf "$port contains references to wip.  Please fix and try again.\n"
-    pause
-fi
-
-make makesum    # GO ports change distname with category
 for file in Makefile pkg-descr; do
     $EDITOR $file
 done
+
+while fgrep '$FreeBSD' $PORTSDIR/wip/$port/Makefile | grep -v '^CATEGORIES'; do
+    printf "$port contains \$FreeBSD\$ tag.  Editing...\n"
+    pause
+    $EDITOR $PORTSDIR/wip/$port/Makefile
+done
+
+while fgrep -w wip Makefile | grep -v '^CATEGORIES'; do
+    printf "$port contains references to wip.  Editing...\n"
+    pause
+    $EDITOR Makefile
+done
+
+make makesum    # GO ports change distname with category
 if ! which port-check; then
     wip-reinstall-port -u -r port-dev
 fi
