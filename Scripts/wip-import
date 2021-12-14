@@ -58,7 +58,7 @@ if [ 0$"update_ports" = 0y ]; then
     git pull
     cd wip
     git pull
-    cd $save_pwd
+    cd $save_cwd
 else
     exit
 fi
