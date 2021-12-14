@@ -52,7 +52,7 @@ if fgrep '$FreeBSD' $PORTSDIR/wip/$port/Makefile | grep -v '^CATEGORIES'; then
 fi
 
 read -p "OK to update ports trees? y/[n] " update_ports
-if [ 0$"update_ports" = 0y ]; then
+if [ 0"$update_ports" = 0y ]; then
     save_cwd=$(pwd)
     cd $PORTSDIR
     git pull
