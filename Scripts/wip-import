@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 port category\n"
+    printf "Usage: $0 category/port\n"
     exit 1
 }
 
@@ -34,15 +34,15 @@ pause()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 1 ] || ! echo $1 | fgrep -q '/'; then
     usage
 fi
 
 PORTSDIR=${PORTSDIR:-/usr/ports}
 EDITOR=${EDITOR:-vi}
 
-port=$1
-category=$2
+category=$(echo $1 | cut -d / -f 1)
+port=$(echo $1 | cut -d / -f 2)
 
 port=`echo $port | sed -e 's|/$||'`
 
@@ -126,4 +126,9 @@ if [ 0$overwrite != 0y ]; then
 	pause
 	$EDITOR Makefile
     fi
+fi
+
+read -p "Run port-commit $category/$port? [y]/n " commit
+if [ 0"$commit" != 0n ]; then
+    port-commit $category/$port
 fi
