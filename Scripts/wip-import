@@ -107,7 +107,7 @@ while fgrep -w wip Makefile | grep -v '^CATEGORIES'; do
     $EDITOR Makefile
 done
 
-make makesum    # GO ports change distname with category
+make makesum || true   # GO ports change distname with category
 if ! which port-check; then
     wip-reinstall-port -u -r port-dev
 fi
@@ -116,7 +116,7 @@ port-check
 # If user chose to overwrite, that means the port already existed and should
 # be in category/Makefile already
 cd $PORTSDIR/$category
-git status
+git status || true
 if [ 0$overwrite != 0y ]; then
     printf "Add port? y/[n] "
     read add
