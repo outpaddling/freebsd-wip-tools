@@ -111,7 +111,12 @@ make makesum || true   # GO ports change distname with category
 if ! which port-check; then
     wip-reinstall-port -u -r port-dev
 fi
-port-check
+
+printf "Run port-check? [y]/n "
+read port_check
+if [ 0"$port_check" != 0n ]; then
+    port-check
+fi
 
 # If user chose to overwrite, that means the port already existed and should
 # be in category/Makefile already
@@ -126,6 +131,17 @@ if [ 0$overwrite != 0y ]; then
 	pause
 	$EDITOR Makefile
     fi
+else
+    # Check for new files
+    #git status -s || true
+    new_files="$(git status -s | awk '$1 == "??" && $2 ~ "$port" { print $2 }')"
+    for file in $new_files; do
+	printf "Add $file? [y]/n "
+	read add_file
+	if [ 0"$add_file" != 0n ]; then
+	    git add $file
+	fi
+    done
 fi
 
 read -p "Run port-commit $category/$port? [y]/n " commit
