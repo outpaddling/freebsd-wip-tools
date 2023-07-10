@@ -133,8 +133,9 @@ if [ 0$overwrite != 0y ]; then
     fi
 else
     # Check for new files
-    #git status -s || true
-    new_files="$(git status -s | awk '$1 == "??" && $2 ~ "$port" { print $2 }')"
+    git status -s || true
+    # Note: Quotes around $() do not impact quotes in the command inside
+    new_files="$(git status -s | awk -v p=$port '$1 == "??" && $2 ~ p { print $2 }')"
     for file in $new_files; do
 	printf "Add $file? [y]/n "
 	read add_file
