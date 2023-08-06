@@ -61,7 +61,7 @@ DragonFly)
 esac
 
 if [ x$update = x ]; then
-    printf "Run wip-update first? y/[n] "
+    printf "Run wip-update first? [y]/n "
     read update
 fi
 
@@ -70,7 +70,7 @@ if [ x$remove = x ]; then
     read remove
 fi
 
-if [ x$update = x'y' ]; then
+if [ x$update != x'n' ]; then
     cd
     wip-update
 fi
