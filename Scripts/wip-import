@@ -66,6 +66,10 @@ S|s)
 
 esac
 
+cd $PORTSDIR/wip/$port
+make clean
+port-diff | more
+
 if [ -e $PORTSDIR/$category/$port ]; then
     if ! diff $PORTSDIR/$category/$port/Makefile $PORTSDIR/wip/$port/Makefile \
 	| egrep 'PORTVERSION|DISTVERSION|PORTREVISION'; then
@@ -81,9 +85,6 @@ if [ -e $PORTSDIR/$category/$port ]; then
 	exit
     fi
 fi
-
-cd $PORTSDIR/wip/$port
-make clean
 
 rsync -av --delete $PORTSDIR/wip/$port $PORTSDIR/$category
 
