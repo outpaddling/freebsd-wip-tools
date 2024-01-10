@@ -51,7 +51,7 @@ else
     printf "Cleaning...\n"
     cd $wip_ports_dir
     for dir in *; do
-	if [ -d $dir/work ]; then
+	if ls -d $dir/work* > /dev/null 2>&1; then
 	    cd $dir
 	    pwd
 	    make clean

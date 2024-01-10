@@ -87,11 +87,8 @@ if [ -e $PORTSDIR/$category/$port ]; then
 fi
 
 rsync -av --delete $PORTSDIR/wip/$port $PORTSDIR/$category
-
 sed -i '' '/^CATEGORIES/s|wip ||' $PORTSDIR/$category/$port/Makefile
-
 cd $PORTSDIR/$category/$port
-
 for file in Makefile pkg-descr; do
     $EDITOR $file
 done
@@ -111,12 +108,6 @@ done
 make makesum || true   # GO ports change distname with category
 if ! which port-check; then
     wip-reinstall-port -u -r port-dev
-fi
-
-printf "Run port-check? [y]/n "
-read port_check
-if [ 0"$port_check" != 0n ]; then
-    port-check
 fi
 
 # If user chose to overwrite, that means the port already existed and should
@@ -144,6 +135,13 @@ else
 	    git add $file
 	fi
     done
+fi
+
+printf "Run port-check? [y]/n "
+read port_check
+if [ 0"$port_check" != 0n ]; then
+    cd $PORTSDIR/$category/$port
+    port-check
 fi
 
 read -p "Run port-commit $category/$port? [y]/n " commit
