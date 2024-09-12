@@ -98,7 +98,7 @@ auto-append-line 'VALID_CATEGORIES+=wip' \
 if [ $invoked_as = wip-poudriere-test ]; then
     port-poudriere-test wip/$port $jails
 elif [ $invoked_as = wip-poudriere-pkg ]; then
-    port-poudriere-test wip/$port $jails
+    port-poudriere-pkg wip/$port $jails
 else
     printf "$0: Invalid invocation.\n" >> /dev/stderr
     exit 1
