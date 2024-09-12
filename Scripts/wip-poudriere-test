@@ -58,6 +58,7 @@ if [ $# -lt 2 ]; then
     usage
 fi
 
+invoked_as=$0
 port=$1
 shift
 jails="$@"
@@ -94,4 +95,11 @@ chmod -R a+rX $PORTSDIR/wip
 rsync -av --delete --exclude work $PORTSDIR/wip $POUDRIERE/ports/default/
 auto-append-line 'VALID_CATEGORIES+=wip' \
 	$POUDRIERE/ports/default/Mk/bsd.local.mk $0
-port-poudriere-test wip/$port $jails
+if [ $invoked_as = wip-poudriere-test ]; then
+    port-poudriere-test wip/$port $jails
+elif [ $invoked_as = wip-poudriere-pkg ]; then
+    port-poudriere-test wip/$port $jails
+else
+    printf "$0: Invalid invocation.\n" >> /dev/stderr
+    exit 1
+fi
