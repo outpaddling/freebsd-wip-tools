@@ -58,7 +58,7 @@ if [ $# -lt 2 ]; then
     usage
 fi
 
-invoked_as=$0
+invoked_as=$(basename $0)
 port=$1
 shift
 jails="$@"
