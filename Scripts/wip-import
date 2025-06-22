@@ -68,7 +68,7 @@ esac
 
 cd $PORTSDIR/wip/$port
 make clean
-port-diff | more
+port-diff
 
 if [ -e $PORTSDIR/$category/$port ]; then
     if ! diff $PORTSDIR/$category/$port/Makefile $PORTSDIR/wip/$port/Makefile \
@@ -104,6 +104,11 @@ while fgrep -w wip Makefile | grep -v '^CATEGORIES'; do
     pause
     $EDITOR Makefile
 done
+
+# Go ports have the category embedded in distinfo
+if grep '^GO_MODULE=' Makefile; then
+    make makesum
+fi
 
 make makesum || true   # GO ports change distname with category
 if ! which port-check; then
