@@ -70,6 +70,11 @@ cd $PORTSDIR/wip/$port
 make clean
 port-diff
 
+
+# FIXME: 
+# printf "Did you run wip-test-dependents or otherwise test all dependent ports? y/[n] "
+# printf "Dependent ports are:\n"
+# port-show-dependents
 if [ -e $PORTSDIR/$category/$port ]; then
     if ! diff $PORTSDIR/$category/$port/Makefile $PORTSDIR/wip/$port/Makefile \
 	| egrep 'PORTVERSION|DISTVERSION|PORTREVISION'; then
