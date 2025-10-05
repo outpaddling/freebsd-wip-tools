@@ -68,8 +68,7 @@ esac
 
 cd $PORTSDIR/wip/$port
 make clean
-port-diff
-
+port-diff || true
 
 # FIXME: 
 # printf "Did you run wip-test-dependents or otherwise test all dependent ports? y/[n] "
