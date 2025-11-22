@@ -93,6 +93,7 @@ chmod -R a+rX $PORTSDIR/distfiles
 POUDRIERE=/usr/local/poudriere
 chmod -R a+rX $PORTSDIR/wip
 rsync -av --delete --exclude work $PORTSDIR/wip $POUDRIERE/ports/default/
+# FIXME: Use bsd.overlays.mk
 auto-append-line 'VALID_CATEGORIES+=wip' \
 	$POUDRIERE/ports/default/Mk/bsd.local.mk $0
 if [ $invoked_as = wip-poudriere-test ]; then

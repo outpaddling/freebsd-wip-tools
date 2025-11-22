@@ -81,14 +81,13 @@ USE_LOCAL_MK=yes
 EOM
 fi
 
-if ! fgrep 'VALID_CATEGORIES+=wip' $PORTSDIR/Mk/bsd.local.mk > /dev/null; then
-    cat << EOM >> $PORTSDIR/Mk/bsd.local.mk
+# New method for enabling wip dir
+auto-append-line "OVERLAYS+=$PORTSDIR/wip" /etc/make.conf $0
 
-# Added by freebsd-wip-checkout
-VALID_CATEGORIES+=wip
-# End addition
-
-EOM
+# Remove old method of enabling wip dir
+if fgrep -q '^VALID_CATEGORIES+=wip' $PORTSDIR/Mk/bsd.local.mk; then
+    sed -i '' -e 's|^VALID_CATEGORIES+=wip|# VALID_CATEGORIES+=wip moved to wip/Mk/bsd.overlays.mk|' \
+	$PORTSDIR/Mk/bsd.local.mk
 fi
 
 installed_version=$(pkg query '%v' wip-tools)
