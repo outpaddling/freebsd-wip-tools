@@ -85,7 +85,8 @@ fi
 auto-append-line "OVERLAYS+=$PORTSDIR/wip" /etc/make.conf $0
 
 # Remove old method of enabling wip dir
-if fgrep -q '^VALID_CATEGORIES+=wip' $PORTSDIR/Mk/bsd.local.mk; then
+if [ -e $PORTSDIR/Mk/bsd.local.mk ] \
+    && fgrep -q '^VALID_CATEGORIES+=wip' $PORTSDIR/Mk/bsd.local.mk; then
     sed -i '' -e 's|^VALID_CATEGORIES+=wip|# VALID_CATEGORIES+=wip moved to wip/Mk/bsd.overlays.mk|' \
 	$PORTSDIR/Mk/bsd.local.mk
 fi
