@@ -93,7 +93,12 @@ chmod -R a+rX $PORTSDIR/distfiles
 POUDRIERE=/usr/local/poudriere
 chmod -R a+rX $PORTSDIR/wip
 rsync -av --delete --exclude work $PORTSDIR/wip $POUDRIERE/ports/default/
-# FIXME: Use bsd.overlays.mk
+
+# Existence of wip/Mk makes poudriere error out for non-existent port.
+# We don't currently use overlays for poudriere, but rely on the old method
+# $POUDRIERE/ports/default/Mk/bsd.local.mk.
+rm -rf $POUDRIERE/ports/default/wip/Mk
+
 auto-append-line 'VALID_CATEGORIES+=wip' \
 	$POUDRIERE/ports/default/Mk/bsd.local.mk $0
 if [ $invoked_as = wip-poudriere-test ]; then
