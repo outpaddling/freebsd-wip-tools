@@ -111,10 +111,9 @@ done
 
 # Go ports have the category embedded in distinfo
 if grep '^GO_MODULE=' Makefile; then
-    make makesum
+    make makesum || true
 fi
 
-make makesum || true   # GO ports change distname with category
 if ! which port-check; then
     wip-reinstall-port -u -r port-dev
 fi
