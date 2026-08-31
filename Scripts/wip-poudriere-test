@@ -64,12 +64,6 @@ shift
 jails="$@"
 umask 022
 
-printf "Update wip first? [y]/n "
-read update_wip
-if [ 0"$update_wip" != 0n ]; then
-    wip-update
-fi
-
 case $(uname) in
 FreeBSD)
     : ${PORTSDIR:=/usr/ports}
@@ -85,6 +79,14 @@ DragonFly)
     ;;
 
 esac
+
+printf "Update wip first? [y]/n "
+read update_wip
+if [ 0"$update_wip" != 0n ]; then
+    wip-update
+else
+    (cd $PORTSDIR/wip && ./clean-all)
+fi
 
 # In case of restrictive umask during prior downloads
 chmod -R a+rX $PORTSDIR/distfiles
